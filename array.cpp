@@ -69,3 +69,42 @@ public:
         return result == INT32_MAX ? 0 : result;
     }
 };
+// 给定一个正整数 n，生成一个包含 1 到 n^2 所有元素，且元素按顺时针顺序螺旋排列的正方形矩阵。
+class Solution
+{
+public:
+    vector<vector<int>> generateMatrix(int n)
+    {
+        int i, j;
+        int loop = n / 2;
+        vector<vector<int>> nums(n, vector<int>(n, 0));
+        int startx = 0, starty = 0, offset = 1, count = 1;
+        while (loop--)
+        {
+            for (j = starty; j < n - offset; j++)
+            {
+                nums[startx][j] = count++;
+            } // j=n-offset;
+            for (i = startx; i < n - offset; i++)
+            {
+                nums[i][j] = count++;
+            }
+            for (; j > starty; j--)
+            {
+                nums[i][j] = count++;
+            }
+            for (; i > startx; i--)
+            {
+                nums[i][j] = count++;
+            }
+            startx++;
+            starty++;
+            offset++;
+        }
+        if (n % 2 == 1)
+        {
+            nums[startx][starty] = count;
+        }
+        return nums;
+    }
+};
