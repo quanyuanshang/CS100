@@ -164,11 +164,11 @@ public:
 class Solution
 {
 public:
-    int minDepth(TreeNode* root)
+    int minDepth(TreeNode *root)
     {
         queue<TreeNode *> que;
         TreeNode *node;
-        int layer=0;
+        int layer = 0;
         int min_layer = INT_MAX;
         if (root != NULL)
             que.push(root);
@@ -177,7 +177,7 @@ public:
             int size = que.size(); // 不记录的话容易和下一层的元素一起弹出来，这是控制弹出数目
             vector<int> vec;
             layer++;
-            while (size--)//在循环里que的size是不断变化的
+            while (size--) // 在循环里que的size是不断变化的
             {
                 node = que.front();
                 que.pop();
@@ -186,14 +186,24 @@ public:
                     que.push(node->left);
                 if (node->right)
                     que.push(node->right);
-                    if(!node->right &&!node->left){
-                        if(min_layer>=layer)
-                            min_layer = layer;
-                    }
-                    
+                if (!node->right && !node->left)
+                {
+                    if (min_layer >= layer)
+                        min_layer = layer;
+                }
             }
-           
         }
-        return min_layer==INT_MAX?0:min_layer;
+        return min_layer == INT_MAX ? 0 : min_layer;
+    }
+};
+// 翻转二叉树
+class Solution
+{
+public:
+    TreeNode *invertTree(TreeNode *root)
+    {
+        if (root == nullptr) // root是指操作的变量
+            return root;
+        swap(root->left, root->right);
     }
 };
