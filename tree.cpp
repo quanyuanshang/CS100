@@ -133,7 +133,7 @@ public:
         return result;
     }
 };
-class Solution // 后续中序
+class Solution // 中序
 {
 public:
     vector<int> inorderTraversal(TreeNode *root)
