@@ -204,6 +204,40 @@ public:
     {
         if (root == nullptr) // root是指操作的变量
             return root;
-        swap(root->left, root->right);
+        swap(root->left, root->right); // 中
+        invertTree(root->left);        // 左
+        invertTree(root->right);       // 右
+
+        return root;
+    }
+};
+
+// 对称二叉树
+class Solution
+{
+public:
+    bool compare(TreeNode *left, TreeNode *right)
+    {
+        if (left == nullptr && right != nullptr)
+            return false;
+        else if (left != nullptr && right == nullptr)
+            return false;
+        else if (left == nullptr && right == nullptr) // 第二层就是两个都为空就可以直接返回。
+            // 剩下的内部节点由bool inside = compare(left->right, right->left)检查
+            // 到最终两个节点都是空就直接返回true。
+            return true;
+        else if (left->val != right->val)
+            return false;
+        bool outside = compare(left->left, right->right);
+        bool inside = compare(left->right, right->left);
+        bool result = outside & inside;
+        return result;
+    };
+
+    bool isSymmetric(TreeNode *root)
+    {
+        if (root == nullptr)
+            return true;
+        return compare(root->left, root->right);
     }
 };
