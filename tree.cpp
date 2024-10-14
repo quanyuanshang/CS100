@@ -160,7 +160,7 @@ public:
     }
 };
 
-// 层序遍历
+// 层序遍历,最小深度
 class Solution
 {
 public:
@@ -168,7 +168,7 @@ public:
     {
         queue<TreeNode *> que;
         TreeNode *node;
-        int layer = 0;
+        int depth = 0;
         int min_layer = INT_MAX;
         if (root != NULL)
             que.push(root);
@@ -176,7 +176,7 @@ public:
         {
             int size = que.size(); // 不记录的话容易和下一层的元素一起弹出来，这是控制弹出数目
             vector<int> vec;
-            layer++;
+            depth++;
             while (size--) // 在循环里que的size是不断变化的
             {
                 node = que.front();
@@ -188,12 +188,40 @@ public:
                     que.push(node->right);
                 if (!node->right && !node->left)
                 {
-                    if (min_layer >= layer)
-                        min_layer = layer;
+                    return depth;
                 }
             }
         }
         return min_layer == INT_MAX ? 0 : min_layer;
+    }
+};
+// 最小深度
+class Solution
+{
+public:
+    int getheight(TreeNode *node)
+    {
+        if (node == nullptr)
+        {
+            return 0;
+        }
+        int leftheight = getheight(node->left);
+
+        int rightheight = getheight(node->right);
+        if (node->left == nullptr && node->right != nullptr)
+        {
+            return 1 + rightheight;
+        }
+        else if (node->left != nullptr && node->right == nullptr)
+        {
+            return 1 + leftheight;
+        }
+        else
+            return min(leftheight, rightheight) + 1;
+    }
+    int minDepth(TreeNode *root)
+    {
+        return getheight(root);
     }
 };
 // 翻转二叉树
@@ -239,5 +267,127 @@ public:
         if (root == nullptr)
             return true;
         return compare(root->left, root->right);
+    }
+};
+
+// 二叉树的最大深度
+class Solution
+{
+public:
+    int getheight(TreeNode *node)
+    {
+        if (node == nullptr)
+        {
+            return 0;
+        }
+        int leftheight = getheight(node->left);
+
+        int rightheight = getheight(node->right);
+        int height = max(leftheight, rightheight) + 1;
+        return height;
+    }
+    int maxDepth(TreeNode *root)
+    {
+        return getheight(root);
+    }
+};
+
+// 平衡二叉树
+class Solution
+{
+public:
+    int getHeight(TreeNode *node)
+    {
+        if (node == nullptr)
+        {
+            return 0;
+        }
+        int leftHeight = getHeight(node->left);
+        if (leftHeight == -1)
+            return -1;
+        int rightHeight = getHeight(node->right);
+        if (rightHeight == -1)
+            return -1;
+
+        return abs(leftHeight - rightHeight) > 1 ? -1 : 1 + max(leftHeight, rightHeight);
+    }
+    bool isBalanced(TreeNode *root)
+    {
+        return getHeight(root) == -1 ? false : true;
+    }
+};
+// 二叉树的所有路劲
+class Solution
+{
+public:
+    void traversal(TreeNode *node, vector<int> &path, vector<string> &result)
+    {
+        path.push_back(node->val); // middle
+
+        if (node->left == nullptr && node->right == nullptr)
+        {
+            string sPath;
+            for (int i = 0; i < path.size() - 1; i++)
+            {
+                sPath += to_string(path[i]);
+                sPath += "->";
+            }
+            sPath += to_string(path[path.size() - 1]);
+
+            result.push_back(sPath);
+        }
+        if (node->left)
+        {
+            traversal(node->left, path, result);
+            path.pop_back(); // 回溯
+        }
+        if (node->right)
+        {
+            traversal(node->right, path, result);
+            path.pop_back(); // 回溯
+        }
+    };
+    vector<string> binaryTreePaths(TreeNode *root)
+    {
+        vector<string> result;
+        vector<int> path;
+        if (root == nullptr)
+            return result;
+        traversal(root, path, result);
+        return result;
+    }
+};
+
+// 路径总和
+class Solution
+{
+public:
+    bool traversal(TreeNode *node, int count)
+    {
+        if (node->left == nullptr && node->right == nullptr && count == 0)
+            return true;
+        if (node->left == nullptr && node->right == nullptr && count != 0)
+            return false;
+        if (node->left)
+        {
+            count -= node->left->val;
+            if (traversal(node->left, count))
+                return true;
+            count += node->left->val; // 回溯
+        }
+        if (node->right)
+        {
+            count -= node->right->val;
+            if (traversal(node->right, count))
+                return true;
+            count += node->right->val;
+        }
+        return false;
+    }
+    bool hasPathSum(TreeNode *root, int targetSum)
+    {
+        if (root == nullptr)
+            return false;
+        return traversal(root, targetSum - root->val);
     }
 };
