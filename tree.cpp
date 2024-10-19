@@ -391,3 +391,171 @@ public:
         return traversal(root, targetSum - root->val);
     }
 };
+// 使用中序与后序序列构造二叉树
+class Solution
+{
+public:
+    TreeNode *traversal(vector<int> &inorder, vector<int> &postorder)
+    {
+        if (postorder.size() == 0)
+            return NULL;
+        int rootvalue = postorder[postorder.size() - 1]; // 先找到根节点
+        TreeNode *root = new TreeNode(rootvalue);
+        if (postorder.size() == 1)
+            return root;
+        int index = 0;
+        for (index = 0; index < inorder.size(); index++)
+        {
+            if (inorder[index] == rootvalue)
+                break;
+        } // index定义在for循环外面来保存在中序数组中找到的中节点的位置
+        // 用index切中序数组 得左中序和右中序
+        vector<int> leftInorder(inorder.begin(), inorder.begin() + index);
+        vector<int> rightInorder(inorder.begin() + index + 1, inorder.end());
+        // 用中序数组里左中序数组大小切后序数组
+        postorder.resize(postorder.size() - 1);
+        vector<int> leftPostorder(postorder.begin(), postorder.begin() + leftInorder.size());
+        vector<int> rightPostorder(postorder.begin() + leftInorder.size(), postorder.end());
+
+        root->left = traversal(leftInorder, leftPostorder);
+        root->right = traversal(rightInorder, rightPostorder);
+        return root;
+    }
+    TreeNode *buildTree(vector<int> &inorder, vector<int> &postorder)
+    {
+        return traversal(inorder, postorder);
+    }
+};
+
+// 二叉搜索树中的搜索
+class Solution
+{
+public:
+    TreeNode *searchBST(TreeNode *root, int val)
+    {
+        if (root == NULL || root->val == val)
+            return root;
+        TreeNode *result = nullptr;
+        if (val < root->val)
+        {
+            result = searchBST(root->left, val);
+        }
+        if (val > root->val)
+        {
+            result = searchBST(root->right, val);
+        }
+        return result;
+    }
+};
+class Solution // 迭代法
+{
+public:
+    TreeNode *searchBST(TreeNode *root, int val)
+    {
+        while (root != nullptr)
+        {
+            if (val < root->val)
+            {
+                root = root->left;
+            }
+            else if (val > root->val)
+                root = root->right;
+            else
+                return root;
+        }
+        return nullptr;
+    }
+};
+// 验证二叉搜索树
+// 使用数组法
+
+class Solution
+{
+public:
+    vector<int> result;
+    bool isValidBST(TreeNode *root)
+    {
+
+        if (root == nullptr)
+        {
+            return true;
+        }
+        if (!isValidBST(root->left))
+            return false;
+        result.push_back(root->val);
+        if (!isValidBST(root->right))
+            return false;
+        for (int i = 1; i < result.size(); i++)
+        {
+            if (result[i] <= result[i - 1])
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+};
+// 不使用数组
+class Solution
+{
+public:
+    long long maxVal = LONG_MIN;
+    bool isValidBST(TreeNode *root)
+    {
+        if (root == nullptr)
+        {
+            return true;
+        }
+        bool left = isValidBST(root->left);
+        if (root->val > maxVal)
+        {
+            maxVal = root->val; // maxVal record the previous node's val,since the inorder ascendingue
+        }
+        else
+            return false;
+        bool right = isValidBST(root->right);
+        return left && right;
+    }
+};
+// 不使用额外变量的双指针法
+
+class Solution
+{
+public:
+    TreeNode *pre = nullptr;
+    bool isValidBST(TreeNode *root)
+    {
+        if (root == nullptr)
+        {
+            return true;
+        }
+        bool left = isValidBST(root->left);
+        if (pre != nullptr && root->val <= pre->val)
+
+            return false;
+        pre = root; // use pointer pre to record the previous node
+        bool right = isValidBST(root->right);
+        return left && right;
+    }
+};
+
+// 二叉搜索树最小绝对值
+class Solution
+{
+public:
+    int result = INT_MAX;
+    TreeNode *pre = nullptr;
+    void traversal(TreeNode *cur)
+    {
+        if (cur == nullptr)
+            return;
+        traversal(cur->left);
+        if (pre != nullptr)
+        {
+            /* code */
+        }
+    };
+    int getMinimumDifference(TreeNode *root)
+    {
+    }
+};
