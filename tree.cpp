@@ -552,10 +552,76 @@ public:
         traversal(cur->left);
         if (pre != nullptr)
         {
-            /* code */
+            result = min(result, cur->val - pre->val);
         }
+        pre = cur;
+        traversal(cur->right);
     };
     int getMinimumDifference(TreeNode *root)
+    {
+        traversal(root);
+        return result;
+    }
+};
+
+// 求二叉搜索树中的众数
+class Solution
+{
+public:
+    int count = 1;
+    int maxCount = 0;
+    vector<int> result;
+    TreeNode *pre;
+    void traversal(TreeNode *cur)
+    {
+        if (cur == nullptr)
+            return;
+        traversal(cur->left);
+        if (pre != nullptr)
+        {
+            if (pre->val == cur->val)
+            {
+                count++;
+            }
+            else
+                count = 1;
+        }
+        pre = cur;
+
+        if (count == maxCount)
+            result.push_back(cur->val); // 必须放在下一个判断条件的上面
+        if (count > maxCount)
+        {
+            maxCount = count;
+            result.clear();
+            result.push_back(cur->val);
+        } // 一旦更新了maxcount说明前面记录的值都不是最大的
+        traversal(cur->right);
+    };
+    vector<int> findMode(TreeNode *root)
+    {
+        traversal(root);
+        return result;
+    }
+};
+
+// 求二叉树最近的公共祖先
+// 普通二叉树
+class Solution
+{
+public:
+    TreeNode *traversal(TreeNode *root, TreeNode *p, TreeNode *q)
+    {
+        if (root == nullptr)
+        {
+            return root;
+        }
+        if (root == q || root == q)
+        {
+            return root;
+        }
+    };
+    TreeNode *lowestCommonAncestor(TreeNode *root, TreeNode *p, TreeNode *q)
     {
     }
 };
