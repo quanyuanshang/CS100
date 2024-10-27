@@ -610,18 +610,134 @@ public:
 class Solution
 {
 public:
-    TreeNode *traversal(TreeNode *root, TreeNode *p, TreeNode *q)
+    TreeNode *lowestCommonAncestor(TreeNode *root, TreeNode *p, TreeNode *q)
     {
         if (root == nullptr)
         {
             return root;
         }
-        if (root == q || root == q)
+        if (root == p || root == q)
         {
             return root;
         }
-    };
+        TreeNode *left = lowestCommonAncestor(root->left, p, q);
+        TreeNode *right = lowestCommonAncestor(root->right, p, q);
+        if (left != nullptr && right != nullptr)
+        {
+            return root;
+        }
+        else if (left == nullptr && right != nullptr)
+        {
+            return right;
+        }
+        else if (left != nullptr && right == nullptr)
+        {
+            return left;
+        }
+        else
+            return nullptr;
+    }
+};
+// 二叉搜索树
+class Solution
+{
+public:
+    TreeNode *traversal(TreeNode *cur, TreeNode *p, TreeNode *q)
+    {
+        if (cur == nullptr)
+        {
+            return cur;
+        }
+        if (cur->val > p->val && cur->val > q->val)
+        {
+            TreeNode *left = traversal(cur->left, p, q);
+            if (left != nullptr)
+                return left;
+        }
+        if (cur->val < p->val && cur->val < q->val)
+        {
+            TreeNode *right = traversal(cur->right, p, q);
+            if (right != nullptr)
+            {
+                return right;
+            }
+        }
+        return cur; // 包含了节点本身是公共祖先的情况。
+    }
     TreeNode *lowestCommonAncestor(TreeNode *root, TreeNode *p, TreeNode *q)
     {
+        return traversal(root, p, q);
+    }
+};
+// 二叉搜索树的插入操作
+class Solution
+{
+public:
+    TreeNode *insertIntoBST(TreeNode *root, int val)
+    {
+        if (root == nullptr)
+        {
+            TreeNode *node = new TreeNode(val);
+            return node;
+        }
+        if (val < root->val)
+        {
+            root->left = insertIntoBST(root->left, val);
+        }
+        if (val > root->val)
+        {
+            root->right = insertIntoBST(root->right, val);
+        }
+        return root;
+    }
+};
+
+// 二叉树中删除节点
+class Solution
+{
+public:
+    TreeNode *deleteNode(TreeNode *root, int key)
+    {
+        if (root == nullptr)
+        {
+            return nullptr;
+        }
+        if (root->val == key)
+        {
+            if (root->left == nullptr && root->right == nullptr)
+            {
+                return nullptr;
+            }
+            else if (root->left != NULL && root->right == nullptr)
+            {
+                return root->left;
+            }
+            else if (root->right != NULL && root->left == nullptr)
+            {
+                return root->right;
+            }
+            else
+            {
+                TreeNode *cur = root->right;
+                while (cur->left != nullptr)
+                {
+                    cur = cur->left;
+                }
+                cur->left = root->left;
+                TreeNode *tmp = root;
+                root = root->right;
+                delete tmp;
+                return root; // 变成左为空右不为空的情况。
+            }
+        }
+        if (key < root->val)
+        {
+            root->left = deleteNode(root->left, key);
+        }
+        if (key > root->val)
+        {
+            root->right = deleteNode(root->right, key);
+        }
+        return root;
     }
 };
