@@ -706,15 +706,22 @@ public:
         {
             if (root->left == nullptr && root->right == nullptr)
             {
+                delete root;
                 return nullptr;
             }
             else if (root->left != NULL && root->right == nullptr)
             {
-                return root->left;
+                TreeNode *tmp = root;
+                root = root->left;
+                delete tmp;
+                return root;
             }
             else if (root->right != NULL && root->left == nullptr)
             {
-                return root->right;
+                TreeNode *tmp = root;
+                root = root->right;
+                delete tmp;
+                return root;
             }
             else
             {
@@ -739,5 +746,51 @@ public:
             root->right = deleteNode(root->right, key);
         }
         return root;
+    }
+};
+// 修建二叉树
+class Solution
+{
+public:
+    TreeNode *trimBST(TreeNode *root, int low, int high)
+    {
+        if (root == nullptr)
+        {
+            return nullptr;
+        }
+        if (root->val < low)
+        {
+            TreeNode *right = trimBST(root->right, low, high);
+            return right; // 修右子树
+        }
+        if (root->val > high)
+        {
+            TreeNode *left = trimBST(root->left, low, high);
+            return left; // 修左子树
+        }
+        root->left = trimBST(root->left, low, high);
+        root->right = trimBST(root->right, low, high);
+        return root;
+    }
+};
+
+// 构造一棵平衡二叉搜索树
+class Solution
+{
+public:
+    TreeNode *traversal(vector<int> &nums, int left, int right) // 左闭右闭
+    {
+        if (left > right)
+        {
+            return nullptr;
+        }
+        int mid = (left + right) / 2;
+        TreeNode *root = new TreeNode(nums[mid]);
+        root->left = traversal(nums, left, mid - 1);
+        root->right = traversal(nums, mid + 1, right);
+        return root;
+    }
+    TreeNode *sortedArrayToBST(vector<int> &nums)
+    {
     }
 };
