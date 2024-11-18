@@ -4,6 +4,7 @@
 #include <vector>
 #include <deque>
 #include <unordered_map>
+#include <unordered_set>
 #include <queue>
 #include <algorithm>
 using namespace std;
@@ -345,5 +346,272 @@ public:
     {
         backtracking(nums, 0);
         return result;
+    }
+};
+// 子集II
+class Solution
+{
+public:
+    vector<int> path;
+    vector<vector<int>> result;
+    void backtracking(vector<int> &nums, int startindex, vector<bool> used)
+    {
+        result.push_back(path);
+        if (startindex > nums.size() - 1)
+        {
+            return;
+        }
+        for (int i = startindex; i < nums.size(); i++)
+        {
+            if (i > 0 && nums[i] == nums[i - 1] && used[i - 1] == false)
+            {
+                continue;
+            }
+            path.push_back(nums[i]);
+            used[i] = true;
+            backtracking(nums, i + 1, used);
+            path.pop_back();
+            used[i] = false;
+        }
+    }
+    vector<vector<int>> subsetsWithDup(vector<int> &nums)
+    {
+        vector<bool> used(nums.size(), false);
+        sort(nums.begin(), nums.end());
+        backtracking(nums, 0, used);
+        return result;
+    }
+};
+// 递增子序列
+class Solution
+{
+public:
+    vector<int> path;
+    vector<vector<int>> result;
+    void backtracking(vector<int> &nums, int startindex)
+    {
+        if (path.size() > 1)
+        {
+            result.push_back(path);
+        }
+        unordered_set<int> uset; // 每一层都会创建记录使用情况的uset
+        for (int i = startindex; i < nums.size(); i++)
+        {
+            if (!path.empty() && nums[i] < path.back() || uset.find(nums[i]) != uset.end())
+            {
+                continue;
+            }
+
+            path.push_back(nums[i]);
+            uset.insert(nums[i]);
+            backtracking(nums, i + 1);
+            path.pop_back();
+        }
+    }
+    vector<vector<int>> findSubsequences(vector<int> &nums)
+    {
+        backtracking(nums, 0);
+        return result;
+    }
+};
+// 排列问题
+class Solution
+{
+public:
+    vector<int> path;
+    vector<vector<int>> result;
+    void backtracking(vector<int> &nums, vector<bool> &used)
+    {
+        if (path.size() == nums.size())
+        {
+            result.push_back(path);
+            return;
+        }
+        for (int i = 0; i < nums.size(); i++)
+        {
+            if (used[i] == true)
+            {
+                continue;
+            }
+            path.push_back(nums[i]);
+            used[i] = true;
+            backtracking(nums, used);
+            path.pop_back();
+            used[i] = false;
+        }
+    }
+    vector<vector<int>> permute(vector<int> &nums)
+    {
+        vector<bool> used(nums.size(), false);
+        backtracking(nums, used);
+        return result;
+    }
+};
+// 排列
+class Solution
+{
+public:
+    vector<int> path;
+    vector<vector<int>> result;
+    void backtracking(vector<int> &nums, vector<bool> &used)
+    {
+        if (path.size() == nums.size())
+        {
+            result.push_back(path);
+            return;
+        }
+        for (int i = 0; i < nums.size(); i++)
+        {
+            if (i > 0 && nums[i - 1] == nums[i] && used[i - 1] == false)
+            {
+                continue;
+            }
+            if (used[i] == true)
+            {
+                continue;
+            }
+            path.push_back(nums[i]);
+            used[i] = true;
+            backtracking(nums, used);
+            path.pop_back();
+            used[i] = false;
+        }
+    }
+
+    vector<vector<int>> permuteUnique(vector<int> &nums)
+    {
+        vector<bool> used(nums.size(), false);
+        sort(nums.begin(), nums.end());
+        backtracking(nums, used);
+        return result;
+    }
+};
+
+// N-queen
+class Solution
+{
+public:
+    vector<vector<string>> result;
+    void backtracking(int n, int row, vector<string> &chessboard)
+    {
+        if (row == n)
+        {
+            result.push_back(chessboard);
+            return;
+        }
+        for (int i = 0; i < n; i++)
+        {
+            if (IsValid(row, i, chessboard, n))
+            {
+                chessboard[row][i] = 'Q';
+                backtracking(n, row + 1, chessboard);
+                chessboard[row][i] = '.';
+            }
+        }
+    }
+    bool IsValid(int row, int col, vector<string> &chessboard, int n)
+    {
+        for (int i = 0; i < row; i++)
+        {
+            if (chessboard[i][col] == 'Q')
+            {
+                return false;
+            }
+        }
+        for (int i = 0; i < col; i++)
+        {
+            if (chessboard[row][i] == 'Q')
+            {
+                return false;
+            }
+        }
+        for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--)
+        {
+            if (chessboard[i][j] == 'Q')
+            {
+                return false;
+            }
+        }
+        for (int i = row - 1, j = col + 1; i >= 0 && j < n; i--, j++)
+        {
+            if (chessboard[i][j] == 'Q')
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    vector<vector<string>> solveNQueens(int n)
+    {
+        vector<string> chessboard(n, string(n, '.'));
+        backtracking(n, 0, chessboard);
+        return result;
+    }
+};
+// 解数独
+class Solution
+{
+public:
+    bool backtracking(vector<vector<char>> &board)
+    {
+        for (int i = 0; i < board.size(); i++) // 行
+        {
+            for (int j = 0; j < board[0].size(); j++) // 列
+            {
+                if (board[i][j] != '.')
+                {
+                    continue;
+                }
+                for (char k = '1'; k <= '9'; k++)
+                {
+                    if (isValid(i, j, k, board))
+                    {
+                        board[i][j] = k;
+                        bool result = backtracking(board);
+                        if (result == true)
+                        {
+                            return true;
+                        }
+                        board[i][j] = '.';
+                    }
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+    bool isValid(int row, int col, char val, vector<vector<char>> &board)
+    {
+        for (int i = 0; i < 9; i++)
+        {
+            if (board[row][i] == val)
+            {
+                return false;
+            }
+        }
+        for (int j = 0; j < 9; j++)
+        {
+            if (board[j][col] == val)
+            {
+                return false;
+            }
+        }
+        int startRow = (row / 3) * 3;
+        int startCol = (col / 3) * 3;
+        for (int i = startRow; i < startRow + 3; i++)
+        {
+            for (int j = startCol; j < startCol + 3; j++)
+            {
+                if (board[i][j] == val)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    void solveSudoku(vector<vector<char>> &board)
+    {
+        backtracking(board);
     }
 };
